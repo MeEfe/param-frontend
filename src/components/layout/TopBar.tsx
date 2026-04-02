@@ -1,6 +1,5 @@
 import { Bell, ChevronLeft, ChevronRight } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import { useApp } from "@/context/AppContext";
 import { navItems } from "@/data/mockData";
 import { ThemeSwitcher } from "./ThemeSwitcher";
@@ -10,40 +9,46 @@ export function TopBar() {
   const navLabel = navItems.find((n) => n.id === activeNav)?.label ?? "Dashboard";
 
   return (
-    <div className="flex items-center justify-between border-b border-border px-6 py-4">
-      <div className="flex items-center gap-4">
-        <h1 className="font-serif text-xl font-semibold">{navLabel}</h1>
-        {activeNav === "bills" && (
-          <Button variant="outline" size="sm">Export</Button>
-        )}
-      </div>
+    <div className="flex h-14 shrink-0 items-center justify-between px-8">
+      {/* Page title */}
+      <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+        {navLabel}
+      </p>
 
-      <div className="flex items-center gap-4">
-        {/* Global month navigator */}
-        <div className="flex items-center gap-1 rounded-md border border-border px-2 py-1">
+      {/* Right controls */}
+      <div className="flex items-center gap-3">
+        {/* Month pill navigator */}
+        <div className="flex items-center gap-0.5 rounded-full border border-border px-1 py-1 bg-secondary/40">
           <button
             onClick={() => setMonthIdx(monthIdx + 1)}
             disabled={!canPrev}
-            className="cursor-pointer p-0.5 text-muted-foreground transition-colors hover:text-foreground disabled:cursor-not-allowed disabled:opacity-30"
+            className="flex h-6 w-6 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-all duration-150 hover:bg-background hover:text-foreground disabled:cursor-not-allowed disabled:opacity-25"
           >
-            <ChevronLeft size={14} />
+            <ChevronLeft size={12} />
           </button>
-          <span className="min-w-[62px] text-center text-xs text-muted-foreground">{currentMonth.label}</span>
+          <span className="min-w-[68px] px-1 text-center text-[11px] font-semibold text-foreground tabular-nums">
+            {currentMonth.label}
+          </span>
           <button
             onClick={() => setMonthIdx(monthIdx - 1)}
             disabled={!canNext}
-            className="cursor-pointer p-0.5 text-muted-foreground transition-colors hover:text-foreground disabled:cursor-not-allowed disabled:opacity-30"
+            className="flex h-6 w-6 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-all duration-150 hover:bg-background hover:text-foreground disabled:cursor-not-allowed disabled:opacity-25"
           >
-            <ChevronRight size={14} />
+            <ChevronRight size={12} />
           </button>
         </div>
 
         <ThemeSwitcher />
-        <div className="h-4 w-px bg-border" />
-        <Bell size={18} className="text-muted-foreground" />
-        <Avatar className="h-8 w-8">
-          <AvatarFallback className="bg-secondary text-foreground text-xs">JD</AvatarFallback>
-        </Avatar>
+
+        <button className="flex h-8 w-8 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground">
+          <Bell size={15} />
+        </button>
+
+        <button className="rounded-full ring-2 ring-transparent transition-all duration-150 hover:ring-primary/30">
+          <Avatar className="h-7 w-7">
+            <AvatarFallback className="bg-primary/20 text-[10px] font-bold text-primary">JD</AvatarFallback>
+          </Avatar>
+        </button>
       </div>
     </div>
   );

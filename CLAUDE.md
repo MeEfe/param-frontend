@@ -20,9 +20,9 @@ pnpm preview      # Preview production build
 ### Component tree
 
 ```
-AppLayout (wraps AppProvider)
-└── Sidebar + TopBar + main content area
-    ├── DashboardContent  (activeNav === "dashboard")
+AppLayout (wraps AppProvider)             ← src/components/layout/AppLayout.tsx
+└── Sidebar + TopBar + MainContent
+    ├── DashboardContent  (activeNav === "dashboard")   ← private component in AppLayout.tsx
     │   ├── NetWorthCard, StatCardGrid
     │   ├── CashFlowCard (SankeyDiagram) + BudgetCard
     │   └── TransactionLedger
@@ -31,6 +31,8 @@ AppLayout (wraps AppProvider)
         ├── FixedBillRow (rent, insurance, etc.)
         └── VariableBillRow (groceries, dining, etc.)
 ```
+
+`activeNav` defaults to `"dashboard"`; only `"bills"` renders a different view — all other nav IDs fall through to `DashboardContent`.
 
 ### Global state — `src/context/AppContext.tsx`
 
@@ -57,3 +59,7 @@ When adding real data, the mock data file is the single integration point.
 ### UI components
 
 shadcn/ui primitives live in `src/components/ui/`. Style variant is `radix-nova` with `neutral` base color (see `components.json`). Add new shadcn components with `pnpm dlx shadcn@latest add <component>`.
+
+### Category colors — `src/lib/categoryColors.ts`
+
+Single source of truth for category badge styling (bg + text Tailwind classes). Used by `TransactionLedger`, `BillsDonutChart`, `BudgetCard`, and `BillStatusBadge`. When adding a new spending category, add it here first.

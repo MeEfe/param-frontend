@@ -5,22 +5,22 @@ interface StatCardProps {
   icon: LucideIcon;
   label: string;
   value: string;
-  accentColor?: string; // tailwind border-color class e.g. "border-emerald-500"
+  iconBg: string;
+  iconColor: string;
 }
 
-export function StatCard({ icon: Icon, label, value, accentColor }: StatCardProps) {
+export function StatCard({ icon: Icon, label, value, iconBg, iconColor }: StatCardProps) {
   return (
-    <div className={cn(
-      "rounded-xl border border-border bg-card p-5 transition-shadow hover:shadow-md",
-      accentColor && `border-t-2 ${accentColor}`
-    )}>
-      <div className="mb-4 flex items-center justify-between">
-        <Icon size={16} strokeWidth={1.5} className="text-muted-foreground" />
+    <div className="rounded-xl border border-border bg-card p-5 transition-all duration-200 hover:ring-1 hover:ring-border/80">
+      <div className="mb-4">
+        <div className={cn("flex h-8 w-8 items-center justify-center rounded-lg", iconBg)}>
+          <Icon size={15} strokeWidth={1.75} className={iconColor} />
+        </div>
       </div>
       <p className="mb-1.5 text-[11px] font-medium uppercase tracking-[0.07em] text-muted-foreground">
         {label}
       </p>
-      <p className="text-2xl font-semibold tabular-nums text-foreground">{value}</p>
+      <p className="text-[26px] leading-none font-semibold tabular-nums text-foreground">{value}</p>
     </div>
   );
 }

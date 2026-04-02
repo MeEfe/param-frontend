@@ -10,15 +10,19 @@ export function CashFlowCard() {
 
   return (
     <>
-      <div className="rounded-xl border border-border bg-card p-5">
-        <div className="mb-3 flex items-center justify-between">
-          <h2 className="font-serif text-lg font-semibold">Cash Flow</h2>
+      <div className="rounded-xl border border-border bg-card p-5 overflow-hidden">
+        <div className="mb-4 flex items-center justify-between">
+          <div>
+            <h2 className="text-[15px] font-semibold text-foreground">Cash Flow</h2>
+            <p className="text-[11px] text-muted-foreground mt-0.5">Income → Allocation</p>
+          </div>
           <button
             onClick={() => setModalOpen(true)}
-            className="cursor-pointer text-muted-foreground transition-colors hover:text-foreground"
-            title="Expand"
+            className="flex cursor-pointer items-center gap-1.5 rounded-md border border-transparent px-2.5 py-1.5 text-[11px] font-medium text-muted-foreground transition-all duration-150 hover:border-border hover:bg-secondary hover:text-foreground"
+            title="Expand diagram"
           >
-            <Maximize2 size={14} />
+            <Maximize2 size={12} />
+            <span>Expand</span>
           </button>
         </div>
         <SankeyDiagram nodes={currentMonth.nodes} links={currentMonth.links} />

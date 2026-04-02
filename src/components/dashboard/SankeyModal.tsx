@@ -15,20 +15,25 @@ export function SankeyModal({ open, onClose, nodes, links, label }: SankeyModalP
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-[2px]"
       onClick={onClose}
+      role="dialog"
+      aria-modal="true"
     >
       <div
-        className="relative w-[90vw] max-w-5xl rounded-xl border border-border bg-card p-8 shadow-2xl"
+        className="relative w-[90vw] max-w-5xl rounded-2xl border border-border bg-card p-8 shadow-2xl animate-in fade-in-0 zoom-in-95 duration-200"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-6 flex items-center justify-between">
-          <h2 className="font-serif text-xl font-semibold">Cash Flow — {label}</h2>
+          <div>
+            <h2 className="text-xl font-semibold text-foreground">Cash Flow</h2>
+            <p className="text-xs text-muted-foreground mt-0.5">{label}</p>
+          </div>
           <button
             onClick={onClose}
-            className="cursor-pointer text-muted-foreground transition-colors hover:text-foreground"
+            className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border border-border text-muted-foreground transition-all duration-150 hover:bg-secondary hover:text-foreground"
           >
-            <X size={20} />
+            <X size={16} />
           </button>
         </div>
         <SankeyDiagram nodes={nodes} links={links} width={900} height={480} />

@@ -1,7 +1,5 @@
 import { useState } from "react";
-import { Plus } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Button } from "@/components/ui/button";
 import { BillsPieChart } from "./BillsPieChart";
 import { FixedBillRow } from "./FixedBillRow";
 import { VariableBillRow } from "./VariableBillRow";
@@ -9,7 +7,7 @@ import { fixedBills, variableBills } from "@/data/mockData";
 import { cn } from "@/lib/utils";
 import type { BillStatus } from "@/types";
 
-type Tab = "fixed" | "variable" | "combined";
+type Tab = "fixed" | "variable";
 
 const FIXED_COLORS: Record<string, string> = {
   Housing:       "oklch(0.7800 0.1300 80)",
@@ -32,41 +30,22 @@ const VARIABLE_COLORS: Record<string, string> = {
   Education: "oklch(0.5200 0.1100 325)",
 };
 
-function buildFixedSlices() {
-  const map: Record<string, number> = {};
-  fixedBills.forEach((b) => { map[b.category] = (map[b.category] ?? 0) + b.amount; });
-  return Object.entries(map).map(([label, value]) => ({
-    label, value, color: FIXED_COLORS[label] ?? "oklch(0.5500 0.1000 270)",
-  }));
+function buildSlices(tab: Tab) {
+  if (tab === "fixed") {
+    const map: Record<string, number> = {};
+    fixedBills.forEach((b) => { map[b.category] = (map[b.category] ?? 0) + b.amount; });
+    return Object.entries(map).map(([label, value]) => ({
+      label, value, color: FIXED_COLORS[label] ?? "oklch(0.5500 0.1000 270)",
+    }));
+  } else {
+    const map: Record<string, number> = {};
+    variableBills.forEach((b) => { map[b.category] = (map[b.category] ?? 0) + b.used; });
+    return Object.entries(map).map(([label, value]) => ({
+      label, value, color: VARIABLE_COLORS[label] ?? "oklch(0.5500 0.1000 270)",
+    }));
+  }
 }
 
-function buildVariableSlices() {
-  const map: Record<string, number> = {};
-  variableBills.forEach((b) => { map[b.category] = (map[b.category] ?? 0) + b.used; });
-  return Object.entries(map).map(([label, value]) => ({
-    label, value, color: VARIABLE_COLORS[label] ?? "oklch(0.5500 0.1000 270)",
-  }));
-}
-
-function buildCombinedSlices() {
-  const fixed = buildFixedSlices();
-  const variable = buildVariableSlices().map((s) => ({ ...s, label: `${s.label} (var)` }));
-  return [...fixed, ...variable];
-}
-
-const fixedSlices = buildFixedSlices();
-const variableSlices = buildVariableSlices();
-const combinedSlices = buildCombinedSlices();
-const totalFixed = fixedBills.reduce((s, b) => s + b.amount, 0);
-const totalVariable = variableBills.reduce((s, b) => s + b.used, 0);
-
-// Status counts
-const paidCount = fixedBills.filter((b) => b.status === "paid").length;
-const overdueCount = fixedBills.filter((b) => b.status === "overdue").length;
-const upcomingCount = fixedBills.filter((b) => b.status === "upcoming").length;
-const overBudgetCount = variableBills.filter((b) => b.used > b.budget).length;
-
-// Status grouping for fixed bills
 const STATUS_ORDER: BillStatus[] = ["overdue", "upcoming", "pending", "paid"];
 const STATUS_LABEL: Record<BillStatus, string> = {
   overdue: "Overdue",
@@ -75,114 +54,125 @@ const STATUS_LABEL: Record<BillStatus, string> = {
   paid: "Paid",
 };
 
-const TABS: { id: Tab; label: string; count: number }[] = [
-  { id: "fixed",    label: "Fixed",    count: fixedBills.length },
-  { id: "variable", label: "Variable", count: variableBills.length },
-  { id: "combined", label: "Combined", count: fixedBills.length + variableBills.length },
-];
+const paidCount = fixedBills.filter((b) => b.status === "paid").length;
+const overdueCount = fixedBills.filter((b) => b.status === "overdue").length;
+const upcomingCount = fixedBills.filter((b) => b.status === "upcoming").length;
+const overBudgetCount = variableBills.filter((b) => b.used > b.budget).length;
 
 export function BillsView() {
   const [tab, setTab] = useState<Tab>("fixed");
-
-  const slices = tab === "fixed" ? fixedSlices : tab === "variable" ? variableSlices : combinedSlices;
-  const total = tab === "fixed" ? totalFixed : tab === "variable" ? totalVariable : totalFixed + totalVariable;
+  const slices = buildSlices(tab);
+  const total = tab === "fixed"
+    ? fixedBills.reduce((s, b) => s + b.amount, 0)
+    : variableBills.reduce((s, b) => s + b.used, 0);
 
   return (
-    <div className="flex flex-col flex-1 min-h-0">
-      {/* Header row: tabs + Add Bill */}
-      <div className="shrink-0 mb-4 flex items-center justify-between">
-        <div className="flex gap-1">
-          {TABS.map((t) => (
+    <div className="flex h-full min-h-0">
+      {/* Left pane — summary */}
+      <div className="flex w-[300px] shrink-0 flex-col border-r border-border px-7 py-7 overflow-y-auto">
+        {/* Status summary */}
+        <p className="mb-4 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+          Overview
+        </p>
+        <div className="space-y-2 mb-6">
+          {overdueCount > 0 && (
+            <div className="flex items-center justify-between">
+              <span className="text-[12px] text-destructive font-medium">Overdue</span>
+              <span className="text-[12px] font-semibold tabular-nums text-destructive">{overdueCount}</span>
+            </div>
+          )}
+          {upcomingCount > 0 && (
+            <div className="flex items-center justify-between">
+              <span className="text-[12px] text-amber-500 font-medium">Upcoming</span>
+              <span className="text-[12px] font-semibold tabular-nums text-amber-500">{upcomingCount}</span>
+            </div>
+          )}
+          {overBudgetCount > 0 && (
+            <div className="flex items-center justify-between">
+              <span className="text-[12px] text-destructive font-medium">Over budget</span>
+              <span className="text-[12px] font-semibold tabular-nums text-destructive">{overBudgetCount}</span>
+            </div>
+          )}
+          <div className="flex items-center justify-between">
+            <span className="text-[12px] text-muted-foreground">Paid</span>
+            <span className="text-[12px] font-semibold tabular-nums text-emerald-500">{paidCount}</span>
+          </div>
+        </div>
+
+        <div className="h-px bg-border mb-6" />
+
+        {/* Tab toggle */}
+        <div className="mb-5 flex gap-1 rounded-lg border border-border/50 bg-secondary/40 p-0.5">
+          {(["fixed", "variable"] as Tab[]).map((t) => (
             <button
-              key={t.id}
-              onClick={() => setTab(t.id)}
+              key={t}
+              onClick={() => setTab(t)}
               className={cn(
-                "cursor-pointer rounded-md px-3.5 py-1.5 text-sm font-medium transition-all duration-150",
-                tab === t.id
-                  ? "bg-primary/15 text-primary border border-primary/30"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground border border-transparent"
+                "flex-1 cursor-pointer rounded-md py-1.5 text-[11px] font-medium capitalize transition-all duration-150",
+                tab === t
+                  ? "bg-background text-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
               )}
             >
-              {t.label}
-              <span className={cn(
-                "ml-1.5 rounded-full px-1.5 py-0.5 text-[10px] font-medium",
-                tab === t.id ? "bg-primary/20 text-primary" : "bg-muted text-muted-foreground"
-              )}>
-                {t.count}
-              </span>
+              {t}
             </button>
           ))}
         </div>
-        <Button size="sm" className="gap-1.5">
-          <Plus size={14} />
-          Add Bill
-        </Button>
-      </div>
 
-      {/* Status summary pills */}
-      <div className="shrink-0 flex items-center gap-2 mb-5">
-        {overdueCount > 0 && (
-          <span className="inline-flex items-center rounded-full bg-destructive/15 px-2.5 py-1 text-xs font-medium text-destructive">
-            {overdueCount} overdue
-          </span>
-        )}
-        {upcomingCount > 0 && (
-          <span className="inline-flex items-center rounded-full bg-amber-500/15 px-2.5 py-1 text-xs font-medium text-amber-600">
-            {upcomingCount} upcoming
-          </span>
-        )}
-        {overBudgetCount > 0 && (
-          <span className="inline-flex items-center rounded-full bg-destructive/15 px-2.5 py-1 text-xs font-medium text-destructive">
-            {overBudgetCount} over budget
-          </span>
-        )}
-        {overdueCount === 0 && upcomingCount === 0 && overBudgetCount === 0 && (
-          <span className="inline-flex items-center rounded-full bg-emerald-500/15 px-2.5 py-1 text-xs font-medium text-emerald-600">
-            All clear
-          </span>
-        )}
-        <span className="ml-auto text-xs text-muted-foreground">
-          {paidCount} paid · <span className="font-medium text-foreground">€{total.toLocaleString("de-DE", { minimumFractionDigits: 2 })}</span> total
-        </span>
-      </div>
-
-      {/* Donut chart + vertical legend in card */}
-      <div className="shrink-0 rounded-xl border border-border bg-card p-5 mb-5">
-        <div className="flex items-center gap-8">
+        {/* Donut */}
+        <div className="flex justify-center mb-4">
           <BillsPieChart slices={slices} />
-          <div className="flex-1 space-y-2.5">
-            {slices.map((sl) => (
-              <div key={sl.label} className="flex items-center justify-between gap-3">
-                <span className="flex items-center gap-2 text-sm text-muted-foreground min-w-0">
-                  <span
-                    className="inline-block h-2.5 w-2.5 shrink-0 rounded-full"
-                    style={{ backgroundColor: sl.color }}
-                  />
-                  <span className="truncate">{sl.label}</span>
+        </div>
+
+        {/* Legend */}
+        <div className="space-y-2">
+          {slices.map((sl) => (
+            <div key={sl.label} className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2 min-w-0">
+                <span className="h-1.5 w-1.5 shrink-0 rounded-full" style={{ backgroundColor: sl.color }} />
+                <span className="text-[11px] text-muted-foreground truncate">{sl.label}</span>
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
+                <span className="text-[10px] text-muted-foreground/50 tabular-nums">
+                  {Math.round((sl.value / total) * 100)}%
                 </span>
-                <span className="text-sm font-semibold tabular-nums text-foreground shrink-0">
-                  €{sl.value.toLocaleString("de-DE", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                <span className="text-[12px] font-semibold tabular-nums text-foreground">
+                  €{sl.value.toLocaleString("de-DE", { maximumFractionDigits: 0 })}
                 </span>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Total */}
+        <div className="mt-5 flex items-center justify-between border-t border-border pt-4">
+          <span className="text-[11px] text-muted-foreground uppercase tracking-[0.08em] font-medium">Total</span>
+          <span className="text-[15px] font-semibold tabular-nums text-foreground">
+            €{total.toLocaleString("de-DE", { minimumFractionDigits: 2 })}
+          </span>
         </div>
       </div>
 
-      {/* Bill list */}
-      <div className="flex flex-1 flex-col min-h-0">
-        <ScrollArea className="flex-1 h-full pr-3">
+      {/* Right pane — bill list */}
+      <div className="flex flex-1 flex-col overflow-hidden px-6 py-7">
+        <p className="mb-5 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground shrink-0">
+          {tab === "fixed" ? "Fixed Bills" : "Variable Spending"}
+        </p>
+        <ScrollArea className="flex-1">
           {tab === "fixed" && (
-            <>
+            <div className="space-y-5 pr-3">
               {STATUS_ORDER.map((status) => {
                 const group = fixedBills.filter((b) => b.status === status);
                 if (group.length === 0) return null;
                 return (
-                  <div key={status} className="mb-4">
-                    <p className="mb-2 text-[11px] font-medium uppercase tracking-[0.06em] text-muted-foreground/70 px-1">
-                      {STATUS_LABEL[status]}
-                    </p>
-                    <div className="rounded-xl border border-border bg-card overflow-hidden">
+                  <div key={status}>
+                    <div className="mb-2 flex items-center gap-3">
+                      <span className="text-[10px] font-semibold uppercase tracking-[0.1em] text-muted-foreground/60">
+                        {STATUS_LABEL[status]}
+                      </span>
+                      <div className="h-px flex-1 bg-border/50" />
+                    </div>
+                    <div className="space-y-px rounded-xl overflow-hidden border border-border">
                       {group.map((b, i) => (
                         <div key={b.id} className={cn(i > 0 && "border-t border-border/60")}>
                           <FixedBillRow {...b} />
@@ -192,40 +182,16 @@ export function BillsView() {
                   </div>
                 );
               })}
-            </>
+            </div>
           )}
           {tab === "variable" && (
-            <div className="rounded-xl border border-border bg-card overflow-hidden">
+            <div className="rounded-xl overflow-hidden border border-border pr-3">
               {variableBills.map((b, i) => (
                 <div key={b.id} className={cn(i > 0 && "border-t border-border/60")}>
                   <VariableBillRow {...b} />
                 </div>
               ))}
             </div>
-          )}
-          {tab === "combined" && (
-            <>
-              <div className="mb-4">
-                <p className="mb-2 text-[11px] font-medium uppercase tracking-[0.06em] text-muted-foreground/70 px-1">Fixed</p>
-                <div className="rounded-xl border border-border bg-card overflow-hidden">
-                  {fixedBills.map((b, i) => (
-                    <div key={b.id} className={cn(i > 0 && "border-t border-border/60")}>
-                      <FixedBillRow {...b} />
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div>
-                <p className="mb-2 text-[11px] font-medium uppercase tracking-[0.06em] text-muted-foreground/70 px-1">Variable</p>
-                <div className="rounded-xl border border-border bg-card overflow-hidden">
-                  {variableBills.map((b, i) => (
-                    <div key={b.id} className={cn(i > 0 && "border-t border-border/60")}>
-                      <VariableBillRow {...b} />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </>
           )}
         </ScrollArea>
       </div>
