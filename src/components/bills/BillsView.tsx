@@ -54,11 +54,6 @@ const STATUS_LABEL: Record<BillStatus, string> = {
   paid: "Paid",
 };
 
-const paidCount = fixedBills.filter((b) => b.status === "paid").length;
-const overdueCount = fixedBills.filter((b) => b.status === "overdue").length;
-const upcomingCount = fixedBills.filter((b) => b.status === "upcoming").length;
-const overBudgetCount = variableBills.filter((b) => b.used > b.budget).length;
-
 export function BillsView() {
   const [tab, setTab] = useState<Tab>("fixed");
   const slices = buildSlices(tab);
@@ -67,42 +62,11 @@ export function BillsView() {
     : variableBills.reduce((s, b) => s + b.used, 0);
 
   return (
-    <div className="flex h-full min-h-0">
-      {/* Left pane — summary */}
-      <div className="flex w-[300px] shrink-0 flex-col border-r border-border px-7 py-7 overflow-y-auto">
-        {/* Status summary */}
-        <p className="mb-4 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-          Overview
-        </p>
-        <div className="space-y-2 mb-6">
-          {overdueCount > 0 && (
-            <div className="flex items-center justify-between">
-              <span className="text-[12px] text-destructive font-medium">Overdue</span>
-              <span className="text-[12px] font-semibold tabular-nums text-destructive">{overdueCount}</span>
-            </div>
-          )}
-          {upcomingCount > 0 && (
-            <div className="flex items-center justify-between">
-              <span className="text-[12px] text-amber-500 font-medium">Upcoming</span>
-              <span className="text-[12px] font-semibold tabular-nums text-amber-500">{upcomingCount}</span>
-            </div>
-          )}
-          {overBudgetCount > 0 && (
-            <div className="flex items-center justify-between">
-              <span className="text-[12px] text-destructive font-medium">Over budget</span>
-              <span className="text-[12px] font-semibold tabular-nums text-destructive">{overBudgetCount}</span>
-            </div>
-          )}
-          <div className="flex items-center justify-between">
-            <span className="text-[12px] text-muted-foreground">Paid</span>
-            <span className="text-[12px] font-semibold tabular-nums text-emerald-500">{paidCount}</span>
-          </div>
-        </div>
-
-        <div className="h-px bg-border mb-6" />
-
+    <div className="flex h-full min-h-0 flex-col">
+      {/* Slim header bar */}
+      <div className="flex shrink-0 items-center gap-6 border-b border-border px-8 py-4">
         {/* Tab toggle */}
-        <div className="mb-5 flex gap-1 rounded-lg border border-border/50 bg-secondary/40 p-0.5">
+        <div className="flex gap-1 rounded-lg border border-border/50 bg-secondary/40 p-0.5 shrink-0 w-[140px]">
           {(["fixed", "variable"] as Tab[]).map((t) => (
             <button
               key={t}
@@ -118,82 +82,84 @@ export function BillsView() {
             </button>
           ))}
         </div>
-
-        {/* Donut */}
-        <div className="flex justify-center mb-4">
-          <BillsPieChart slices={slices} />
-        </div>
-
-        {/* Legend */}
-        <div className="space-y-2">
-          {slices.map((sl) => (
-            <div key={sl.label} className="flex items-center justify-between gap-2">
-              <div className="flex items-center gap-2 min-w-0">
-                <span className="h-1.5 w-1.5 shrink-0 rounded-full" style={{ backgroundColor: sl.color }} />
-                <span className="text-[11px] text-muted-foreground truncate">{sl.label}</span>
-              </div>
-              <div className="flex items-center gap-2 shrink-0">
-                <span className="text-[10px] text-muted-foreground/50 tabular-nums">
-                  {Math.round((sl.value / total) * 100)}%
-                </span>
-                <span className="text-[12px] font-semibold tabular-nums text-foreground">
-                  €{sl.value.toLocaleString("de-DE", { maximumFractionDigits: 0 })}
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Total */}
-        <div className="mt-5 flex items-center justify-between border-t border-border pt-4">
-          <span className="text-[11px] text-muted-foreground uppercase tracking-[0.08em] font-medium">Total</span>
-          <span className="text-[15px] font-semibold tabular-nums text-foreground">
+        <div className="h-6 w-px bg-border shrink-0" />
+        <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground/70">
+          {tab === "fixed" ? "Fixed Bills" : "Variable Spending"}
+        </p>
+        <div className="ml-auto flex items-baseline gap-2">
+          <span className="text-[10px] font-medium uppercase tracking-[0.1em] text-muted-foreground/60">Total</span>
+          <span className="text-[18px] font-semibold tabular-nums text-foreground">
             €{total.toLocaleString("de-DE", { minimumFractionDigits: 2 })}
           </span>
         </div>
       </div>
 
-      {/* Right pane — bill list */}
-      <div className="flex flex-1 flex-col overflow-hidden px-6 py-7">
-        <p className="mb-5 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground shrink-0">
-          {tab === "fixed" ? "Fixed Bills" : "Variable Spending"}
-        </p>
-        <ScrollArea className="flex-1">
-          {tab === "fixed" && (
-            <div className="space-y-5 pr-3">
-              {STATUS_ORDER.map((status) => {
-                const group = fixedBills.filter((b) => b.status === status);
-                if (group.length === 0) return null;
-                return (
-                  <div key={status}>
-                    <div className="mb-2 flex items-center gap-3">
-                      <span className="text-[10px] font-semibold uppercase tracking-[0.1em] text-muted-foreground/60">
-                        {STATUS_LABEL[status]}
-                      </span>
-                      <div className="h-px flex-1 bg-border/50" />
-                    </div>
-                    <div className="space-y-px rounded-xl overflow-hidden border border-border">
-                      {group.map((b, i) => (
-                        <div key={b.id} className={cn(i > 0 && "border-t border-border/60")}>
-                          <FixedBillRow {...b} />
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-          {tab === "variable" && (
-            <div className="rounded-xl overflow-hidden border border-border pr-3">
-              {variableBills.map((b, i) => (
-                <div key={b.id} className={cn(i > 0 && "border-t border-border/60")}>
-                  <VariableBillRow {...b} />
+      {/* Main content */}
+      <div className="flex flex-1 min-h-0 overflow-hidden">
+        {/* Left — chart widget */}
+        <div className="flex w-[260px] shrink-0 flex-col items-center border-r border-border px-6 py-6 overflow-y-auto">
+          <BillsPieChart slices={slices} size={160} />
+
+          {/* Legend */}
+          <div className="mt-5 w-full space-y-2.5">
+            {slices.map((sl) => (
+              <div key={sl.label} className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2 min-w-0">
+                  <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: sl.color }} />
+                  <span className="text-[12px] text-muted-foreground truncate">{sl.label}</span>
                 </div>
-              ))}
-            </div>
-          )}
-        </ScrollArea>
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className="text-[10px] text-muted-foreground/40 tabular-nums">
+                    {Math.round((sl.value / total) * 100)}%
+                  </span>
+                  <span className="text-[12px] font-semibold tabular-nums text-foreground">
+                    €{sl.value.toLocaleString("de-DE", { maximumFractionDigits: 0 })}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Right — bill list */}
+        <div className="flex flex-1 flex-col overflow-hidden px-6 py-6 min-h-0">
+          <ScrollArea className="flex-1">
+            {tab === "fixed" && (
+              <div className="space-y-5 pr-3">
+                {STATUS_ORDER.map((status) => {
+                  const group = fixedBills.filter((b) => b.status === status);
+                  if (group.length === 0) return null;
+                  return (
+                    <div key={status}>
+                      <div className="mb-2 flex items-center gap-3">
+                        <span className="text-[10px] font-semibold uppercase tracking-[0.1em] text-muted-foreground/60">
+                          {STATUS_LABEL[status]}
+                        </span>
+                        <div className="h-px flex-1 bg-border/50" />
+                      </div>
+                      <div className="space-y-px rounded-xl overflow-hidden border border-border">
+                        {group.map((b, i) => (
+                          <div key={b.id} className={cn(i > 0 && "border-t border-border/60")}>
+                            <FixedBillRow {...b} />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+            {tab === "variable" && (
+              <div className="rounded-xl overflow-hidden border border-border pr-3">
+                {variableBills.map((b, i) => (
+                  <div key={b.id} className={cn(i > 0 && "border-t border-border/60")}>
+                    <VariableBillRow {...b} />
+                  </div>
+                ))}
+              </div>
+            )}
+          </ScrollArea>
+        </div>
       </div>
     </div>
   );

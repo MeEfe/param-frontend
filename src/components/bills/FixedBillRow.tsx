@@ -1,5 +1,4 @@
 import type { FixedBill } from "@/types";
-import { BillStatusBadge } from "./BillStatusBadge";
 import { cn } from "@/lib/utils";
 
 export function FixedBillRow({ icon: Icon, name, dueDate, amount, status, category }: FixedBill) {
@@ -40,7 +39,6 @@ export function FixedBillRow({ icon: Icon, name, dueDate, amount, status, catego
           {category}
         </p>
       </div>
-      <BillStatusBadge status={status} />
       <span className={cn(
         "min-w-[72px] text-right text-sm font-semibold tabular-nums transition-colors duration-150",
         isPaid

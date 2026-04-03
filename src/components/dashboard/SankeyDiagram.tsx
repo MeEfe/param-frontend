@@ -41,7 +41,7 @@ export function SankeyDiagram({ nodes: rawNodes, links: rawLinks, width = 600, h
       .nodeWidth(NODE_WIDTH)
       .nodePadding(NODE_PADDING)
       .nodeAlign(sankeyLeft)
-      .extent([[60, 10], [width - 90, height - 10]]);
+      .extent([[120, 10], [width - 90, height - 10]]);
 
     return layout({ nodes: graphNodes, links: graphLinks });
   }, [rawNodes, rawLinks, width, height]);

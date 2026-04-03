@@ -6,6 +6,7 @@ interface Slice {
 
 interface BillsPieChartProps {
   slices: Slice[];
+  size?: number;
 }
 
 const SIZE = 220;
@@ -39,7 +40,7 @@ function donutSlicePath(startAngle: number, endAngle: number): string {
   ].join(" ");
 }
 
-export function BillsPieChart({ slices }: BillsPieChartProps) {
+export function BillsPieChart({ slices, size = SIZE }: BillsPieChartProps) {
   const total = slices.reduce((s, sl) => s + sl.value, 0);
   if (total === 0) return null;
 
@@ -57,7 +58,7 @@ export function BillsPieChart({ slices }: BillsPieChartProps) {
   const formattedTotal = total.toLocaleString("de-DE", { maximumFractionDigits: 0 });
 
   return (
-    <svg viewBox={`0 0 ${SIZE} ${SIZE}`} width={SIZE} height={SIZE} className="shrink-0">
+    <svg viewBox={`0 0 ${SIZE} ${SIZE}`} width={size} height={size} className="shrink-0">
       {rendered.map((sl) => (
         <path
           key={sl.label}
