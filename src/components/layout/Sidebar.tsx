@@ -1,11 +1,14 @@
 import { useState } from "react";
-import { Settings, TrendingUp, ChevronLeft, ChevronRight } from "lucide-react";
+import { Settings, ChevronLeft, ChevronRight } from "lucide-react";
 import { navItems } from "@/data/mockData";
 import { useApp } from "@/context/AppContext";
 import { cn } from "@/lib/utils";
+import { LogoOnlyThick } from "@/assets/LogoOnlyThick";
+import { LogoDarkThick } from "@/assets/LogoDarkThick";
+import { LogoWhiteThick } from "@/assets/LogoWhiteThick";
 
 export function Sidebar() {
-  const { activeNav, setActiveNav } = useApp();
+  const { activeNav, setActiveNav, isDark } = useApp();
   const [expanded, setExpanded] = useState(false);
 
   return (
@@ -15,17 +18,17 @@ export function Sidebar() {
         expanded ? "w-[200px] items-start px-3" : "w-[64px] items-center"
       )}
     >
-      {/* Logo mark */}
-      <div className={cn("mb-8 flex items-center gap-3", expanded ? "px-1" : "")}>
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-primary">
-          <TrendingUp size={15} className="text-primary-foreground" strokeWidth={2.5} />
-        </div>
-        {expanded && (
-          <span className="text-[13px] font-bold text-foreground tracking-tight whitespace-nowrap">
-            myMiza
-          </span>
+      {/* Logo */}
+      <div className={cn("mb-8 flex items-center", expanded ? "px-1" : "")}>
+        {expanded ? (
+          isDark
+            ? <LogoDarkThick className="h-8 w-auto" />
+            : <LogoWhiteThick className="h-8 w-auto" />
+        ) : (
+          <LogoOnlyThick className="h-8 w-8" />
         )}
       </div>
+
 
       {/* Nav icons */}
       <nav className={cn("flex flex-1 flex-col gap-1", expanded ? "w-full" : "items-center")}>
