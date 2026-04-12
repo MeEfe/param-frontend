@@ -9,7 +9,7 @@ function MainContent() {
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
       <TopBar />
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 min-h-0 overflow-hidden">
         {activeNav === "bills" ? <BillsView /> : <DashboardView />}
       </div>
     </div>

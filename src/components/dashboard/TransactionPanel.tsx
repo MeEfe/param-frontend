@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { transactions } from "@/data/mockData";
-import { CATEGORY_BADGE, DEFAULT_BADGE } from "@/lib/categoryColors";
 import { cn } from "@/lib/utils";
 import type { Transaction } from "@/types";
 
@@ -46,7 +45,6 @@ export function TransactionPanel() {
       {/* List */}
       <div className="space-y-1 overflow-y-auto">
         {filtered.map((t: Transaction) => {
-          const badge = CATEGORY_BADGE[t.category] ?? DEFAULT_BADGE;
           const Icon = t.icon;
           return (
             <div
@@ -60,13 +58,7 @@ export function TransactionPanel() {
                 <p className="text-[13px] font-medium text-foreground truncate">{t.name}</p>
                 <p className="text-[11px] text-muted-foreground">{t.date}</p>
               </div>
-              <span className={cn("shrink-0 rounded-full px-2 py-0.5 text-[10px] font-medium", badge.bg, badge.text)}>
-                {t.category}
-              </span>
-              <span className={cn(
-                "shrink-0 min-w-[72px] text-right text-[13px] font-semibold tabular-nums",
-                t.type === "inflow" ? "text-emerald-500" : "text-foreground"
-              )}>
+              <span className={`shrink-0 min-w-[72px] text-right text-[13px] font-semibold tabular-nums ${t.type === "inflow" ? "text-emerald-500" : "text-red-400"}`}>
                 {t.type === "inflow" ? "+" : "−"}€{t.amount.toLocaleString("de-DE", { minimumFractionDigits: 2 })}
               </span>
             </div>

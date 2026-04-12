@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 interface Slice {
   label: string;
   value: number;
@@ -41,6 +43,7 @@ function donutSlicePath(startAngle: number, endAngle: number): string {
 }
 
 export function BillsPieChart({ slices, size = SIZE }: BillsPieChartProps) {
+  const [hovered, setHovered] = useState<string | null>(null);
   const total = slices.reduce((s, sl) => s + sl.value, 0);
   if (total === 0) return null;
 
@@ -55,7 +58,7 @@ export function BillsPieChart({ slices, size = SIZE }: BillsPieChartProps) {
     []
   );
 
-  const formattedTotal = total.toLocaleString("de-DE", { maximumFractionDigits: 0 });
+  const hoveredSlice = hovered ? rendered.find((s) => s.label === hovered) : null;
 
   return (
     <svg viewBox={`0 0 ${SIZE} ${SIZE}`} width={size} height={size} className="shrink-0">
@@ -64,34 +67,52 @@ export function BillsPieChart({ slices, size = SIZE }: BillsPieChartProps) {
           key={sl.label}
           d={sl.path}
           fill={sl.color}
-          fillOpacity={0.92}
-          className="transition-opacity hover:opacity-100"
+          fillOpacity={hovered === null ? 0.92 : hovered === sl.label ? 1 : 0.4}
+          style={{ transition: "fill-opacity 0.15s ease", cursor: "default" }}
+          onMouseEnter={() => setHovered(sl.label)}
+          onMouseLeave={() => setHovered(null)}
         />
       ))}
-      {/* Center label */}
-      <text
-        x={CX}
-        y={CY - 9}
-        textAnchor="middle"
-        fontSize={10}
-        fill="oklch(0.5811 0.0399 269.57)"
-        fontFamily="ui-sans-serif, system-ui, sans-serif"
-        fontWeight="500"
-        letterSpacing="0.04em"
-      >
-        TOTAL
-      </text>
-      <text
-        x={CX}
-        y={CY + 13}
-        textAnchor="middle"
-        fontSize={17}
-        fontWeight="700"
-        fill="oklch(0.9398 0.0100 267.36)"
-        fontFamily="ui-sans-serif, system-ui, sans-serif"
-      >
-        €{formattedTotal}
-      </text>
+      {/* Center tooltip — shows on slice hover */}
+      {hoveredSlice && (
+        <>
+          <text
+            x={CX}
+            y={CY - 12}
+            textAnchor="middle"
+            fontSize={10}
+            fontFamily="ui-sans-serif, system-ui, sans-serif"
+            fontWeight="500"
+            className="fill-muted-foreground"
+            style={{ pointerEvents: "none" }}
+          >
+            {hoveredSlice.label}
+          </text>
+          <text
+            x={CX}
+            y={CY + 7}
+            textAnchor="middle"
+            fontSize={15}
+            fontWeight="700"
+            fontFamily="ui-sans-serif, system-ui, sans-serif"
+            className="fill-foreground"
+            style={{ pointerEvents: "none" }}
+          >
+            €{hoveredSlice.value.toLocaleString("de-DE", { maximumFractionDigits: 0 })}
+          </text>
+          <text
+            x={CX}
+            y={CY + 22}
+            textAnchor="middle"
+            fontSize={10}
+            fontFamily="ui-sans-serif, system-ui, sans-serif"
+            className="fill-muted-foreground"
+            style={{ pointerEvents: "none" }}
+          >
+            {Math.round((hoveredSlice.value / total) * 100)}%
+          </text>
+        </>
+      )}
     </svg>
   );
 }

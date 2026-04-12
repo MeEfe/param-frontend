@@ -82,10 +82,6 @@ export function BillsView() {
             </button>
           ))}
         </div>
-        <div className="h-6 w-px bg-border shrink-0" />
-        <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground/70">
-          {tab === "fixed" ? "Fixed Bills" : "Variable Spending"}
-        </p>
         <div className="ml-auto flex items-baseline gap-2">
           <span className="text-[10px] font-medium uppercase tracking-[0.1em] text-muted-foreground/60">Total</span>
           <span className="text-[18px] font-semibold tabular-nums text-foreground">
@@ -103,19 +99,9 @@ export function BillsView() {
           {/* Legend */}
           <div className="mt-5 w-full space-y-2.5">
             {slices.map((sl) => (
-              <div key={sl.label} className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2 min-w-0">
-                  <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: sl.color }} />
-                  <span className="text-[12px] text-muted-foreground truncate">{sl.label}</span>
-                </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  <span className="text-[10px] text-muted-foreground/40 tabular-nums">
-                    {Math.round((sl.value / total) * 100)}%
-                  </span>
-                  <span className="text-[12px] font-semibold tabular-nums text-foreground">
-                    €{sl.value.toLocaleString("de-DE", { maximumFractionDigits: 0 })}
-                  </span>
-                </div>
+              <div key={sl.label} className="flex items-center gap-2">
+                <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: sl.color }} />
+                <span className="text-[12px] text-muted-foreground truncate">{sl.label}</span>
               </div>
             ))}
           </div>

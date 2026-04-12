@@ -10,10 +10,9 @@ export function TopBar() {
 
   return (
     <div className="flex h-14 shrink-0 items-center justify-between px-8">
-      {/* Page title */}
-      <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+      <h2 className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
         {navLabel}
-      </p>
+      </h2>
 
       {/* Right controls */}
       <div className="flex items-center gap-3">

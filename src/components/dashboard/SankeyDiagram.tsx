@@ -119,7 +119,7 @@ export function SankeyDiagram({ nodes: rawNodes, links: rawLinks, width = 600, h
                 fillOpacity={dimmed ? 0.3 : 1}
                 style={{ transition: "fill-opacity 0.15s ease" }}
               >
-                {node.label} €{node.value.toLocaleString()}
+                {node.label}
               </text>
             ) : (
               <text
@@ -128,12 +128,12 @@ export function SankeyDiagram({ nodes: rawNodes, links: rawLinks, width = 600, h
                 textAnchor="start"
                 dominantBaseline="middle"
                 fontSize={11}
-                fill={isSavings ? GOLD : "oklch(0.7800 0.0400 270)"}
-                fontWeight={isSavings ? "600" : "400"}
+                fill="oklch(0.7800 0.0400 270)"
+                fontWeight="400"
                 fillOpacity={dimmed ? 0.3 : 1}
                 style={{ transition: "fill-opacity 0.15s ease" }}
               >
-                {node.label} €{node.value.toLocaleString()}
+                {node.label}
               </text>
             )}
           </g>

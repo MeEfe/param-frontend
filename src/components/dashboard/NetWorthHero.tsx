@@ -1,9 +1,7 @@
 import { TrendingUp, TrendingDown } from "lucide-react";
 import { netWorth } from "@/data/mockData";
-import { useApp } from "@/context/AppContext";
 
 export function NetWorthHero() {
-  const { currentMonth } = useApp();
   const isPositive = netWorth.change.startsWith("+");
 
   return (
@@ -20,7 +18,6 @@ export function NetWorthHero() {
           {isPositive ? <TrendingUp size={12} strokeWidth={2} /> : <TrendingDown size={12} strokeWidth={2} />}
           {netWorth.change}
         </span>
-        <span className="text-[11px] text-muted-foreground/60">{netWorth.changeLabel}</span>
       </div>
 
       <div className="h-6 w-px bg-border shrink-0" />
@@ -37,9 +34,6 @@ export function NetWorthHero() {
         <span className="text-[14px] font-semibold tabular-nums text-destructive">−€6,350</span>
       </div>
 
-      <div className="ml-auto text-[11px] text-muted-foreground/50 font-medium">
-        {currentMonth.label}
-      </div>
     </div>
   );
 }

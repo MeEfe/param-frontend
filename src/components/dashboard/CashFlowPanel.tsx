@@ -15,18 +15,17 @@ export function CashFlowPanel() {
             <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
               Cash Flow
             </p>
-            <p className="mt-0.5 text-[11px] text-muted-foreground/60">Income allocation · {currentMonth.label}</p>
           </div>
           <button
             onClick={() => setExpanded(true)}
-            className="flex cursor-pointer items-center gap-1.5 rounded-lg border border-border/60 px-2.5 py-1.5 text-[11px] font-medium text-muted-foreground transition-all duration-150 hover:border-border hover:bg-secondary hover:text-foreground"
+            className="flex cursor-pointer items-center justify-center rounded-lg border border-border/60 p-1.5 text-muted-foreground transition-all duration-150 hover:border-border hover:bg-secondary hover:text-foreground"
+            aria-label="Expand"
           >
-            <Maximize2 size={11} />
-            Expand
+            <Maximize2 size={13} />
           </button>
         </div>
         <div className="flex-1 min-h-0">
-          <SankeyDiagram nodes={currentMonth.nodes} links={currentMonth.links} height={220} />
+          <SankeyDiagram nodes={currentMonth.nodes} links={currentMonth.links} height={170} />
         </div>
       </div>
 
@@ -39,13 +38,12 @@ export function CashFlowPanel() {
           aria-modal="true"
         >
           <div
-            className="relative w-[90vw] max-w-5xl rounded-2xl border border-border bg-card p-8 shadow-2xl animate-in fade-in-0 zoom-in-95 duration-200"
+            className="relative w-[95vw] max-w-7xl rounded-2xl border border-border bg-card p-8 shadow-2xl animate-in fade-in-0 zoom-in-95 duration-200"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="mb-6 flex items-center justify-between">
               <div>
                 <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">Cash Flow</p>
-                <p className="mt-0.5 text-lg font-semibold text-foreground">{currentMonth.label}</p>
               </div>
               <button
                 onClick={() => setExpanded(false)}
@@ -54,7 +52,7 @@ export function CashFlowPanel() {
                 <X size={15} />
               </button>
             </div>
-            <SankeyDiagram nodes={currentMonth.nodes} links={currentMonth.links} width={900} height={480} />
+            <SankeyDiagram nodes={currentMonth.nodes} links={currentMonth.links} width={1200} height={600} />
           </div>
         </div>
       )}
