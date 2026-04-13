@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { BillsPieChart } from "./BillsPieChart";
 import { FixedBillRow } from "./FixedBillRow";
 import { VariableBillRow } from "./VariableBillRow";
@@ -109,7 +108,7 @@ export function BillsView() {
 
         {/* Right — bill list */}
         <div className="flex flex-1 flex-col overflow-hidden px-6 py-6 min-h-0">
-          <ScrollArea className="flex-1">
+          <div className="flex-1 min-h-0 overflow-y-auto pr-1">
             {tab === "fixed" && (
               <div className="space-y-5 pr-3">
                 {STATUS_ORDER.map((status) => {
@@ -144,7 +143,7 @@ export function BillsView() {
                 ))}
               </div>
             )}
-          </ScrollArea>
+          </div>
         </div>
       </div>
     </div>

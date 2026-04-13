@@ -9,7 +9,7 @@ export function CashFlowPanel() {
 
   return (
     <>
-      <div className="flex flex-1 flex-col overflow-hidden px-8 py-6">
+      <div className="flex flex-1 min-h-0 flex-col overflow-hidden px-8 py-6">
         <div className="mb-4 flex items-center justify-between">
           <div>
             <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">

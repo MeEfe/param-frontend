@@ -41,7 +41,7 @@ export function SankeyDiagram({ nodes: rawNodes, links: rawLinks, width = 600, h
       .nodeWidth(NODE_WIDTH)
       .nodePadding(NODE_PADDING)
       .nodeAlign(sankeyLeft)
-      .extent([[120, 10], [width - 90, height - 10]]);
+      .extent([[72, 10], [width - 90, height - 10]]);
 
     return layout({ nodes: graphNodes, links: graphLinks });
   }, [rawNodes, rawLinks, width, height]);
@@ -53,7 +53,7 @@ export function SankeyDiagram({ nodes: rawNodes, links: rawLinks, width = 600, h
   };
 
   return (
-    <svg viewBox={`0 0 ${width} ${height}`} width="100%" className="overflow-visible">
+    <svg viewBox={`0 0 ${width} ${height}`} width="100%" height="100%" className="overflow-visible">
       {/* Links */}
       {links.map((link: SLink, i: number) => {
         const generator = sankeyLinkHorizontal<NodeDatum, LinkDatum>();

@@ -1,5 +1,7 @@
 import { useState } from "react";
+import { ArrowRight } from "lucide-react";
 import { transactions } from "@/data/mockData";
+import { useApp } from "@/context/AppContext";
 import { cn } from "@/lib/utils";
 import type { Transaction } from "@/types";
 
@@ -13,17 +15,27 @@ const FILTERS: { id: Filter; label: string }[] = [
 
 export function TransactionPanel() {
   const [filter, setFilter] = useState<Filter>("all");
-  const filtered = transactions.filter((t: Transaction) =>
-    filter === "all" ? true : t.type === filter
-  );
+  const { setActiveNav } = useApp();
+  const filtered = transactions
+    .filter((t: Transaction) => filter === "all" ? true : t.type === filter)
+    .slice(0, 4);
 
   return (
-    <div className="flex flex-col px-8 py-5" style={{ maxHeight: "calc(100% - 0px)" }}>
+    <div className="flex flex-1 min-h-0 flex-col px-8 py-5">
       {/* Header */}
       <div className="mb-4 flex items-center justify-between">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-          Recent Transactions
-        </p>
+        <div className="flex items-center gap-2 cursor-pointer hover:text-muted-foreground" onClick={() => setActiveNav("bills")}
+				>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+            Recent Transactions
+          </p>
+          <button
+            className="flex cursor-pointer justify-center rounded-md p-0.5 text-muted-foreground/50 transition-all duration-150"
+            aria-label="Go to bills"
+          >
+            <ArrowRight size={13} />
+          </button>
+        </div>
         <div className="flex gap-0.5 rounded-lg border border-border/50 bg-secondary/40 p-0.5">
           {FILTERS.map((f) => (
             <button
@@ -43,7 +55,7 @@ export function TransactionPanel() {
       </div>
 
       {/* List */}
-      <div className="space-y-1 overflow-y-auto">
+      <div className="space-y-1">
         {filtered.map((t: Transaction) => {
           const Icon = t.icon;
           return (

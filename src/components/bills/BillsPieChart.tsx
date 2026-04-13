@@ -73,46 +73,42 @@ export function BillsPieChart({ slices, size = SIZE }: BillsPieChartProps) {
           onMouseLeave={() => setHovered(null)}
         />
       ))}
-      {/* Center tooltip — shows on slice hover */}
-      {hoveredSlice && (
-        <>
-          <text
-            x={CX}
-            y={CY - 12}
-            textAnchor="middle"
-            fontSize={10}
-            fontFamily="ui-sans-serif, system-ui, sans-serif"
-            fontWeight="500"
-            className="fill-muted-foreground"
-            style={{ pointerEvents: "none" }}
-          >
-            {hoveredSlice.label}
-          </text>
-          <text
-            x={CX}
-            y={CY + 7}
-            textAnchor="middle"
-            fontSize={15}
-            fontWeight="700"
-            fontFamily="ui-sans-serif, system-ui, sans-serif"
-            className="fill-foreground"
-            style={{ pointerEvents: "none" }}
-          >
-            €{hoveredSlice.value.toLocaleString("de-DE", { maximumFractionDigits: 0 })}
-          </text>
-          <text
-            x={CX}
-            y={CY + 22}
-            textAnchor="middle"
-            fontSize={10}
-            fontFamily="ui-sans-serif, system-ui, sans-serif"
-            className="fill-muted-foreground"
-            style={{ pointerEvents: "none" }}
-          >
-            {Math.round((hoveredSlice.value / total) * 100)}%
-          </text>
-        </>
-      )}
+      {/* Center — shows total by default, hovered slice values on hover */}
+      <text
+        x={CX}
+        y={CY - 12}
+        textAnchor="middle"
+        fontSize={10}
+        fontFamily="ui-sans-serif, system-ui, sans-serif"
+        fontWeight="500"
+        className="fill-muted-foreground"
+        style={{ pointerEvents: "none" }}
+      >
+        {hoveredSlice ? hoveredSlice.label : "Total"}
+      </text>
+      <text
+        x={CX}
+        y={CY + 7}
+        textAnchor="middle"
+        fontSize={15}
+        fontWeight="700"
+        fontFamily="ui-sans-serif, system-ui, sans-serif"
+        className="fill-foreground"
+        style={{ pointerEvents: "none" }}
+      >
+        €{(hoveredSlice ? hoveredSlice.value : total).toLocaleString("de-DE", { maximumFractionDigits: 0 })}
+      </text>
+      <text
+        x={CX}
+        y={CY + 22}
+        textAnchor="middle"
+        fontSize={10}
+        fontFamily="ui-sans-serif, system-ui, sans-serif"
+        className="fill-muted-foreground"
+        style={{ pointerEvents: "none" }}
+      >
+        {hoveredSlice ? `${Math.round((hoveredSlice.value / total) * 100)}%` : ""}
+      </text>
     </svg>
   );
 }
