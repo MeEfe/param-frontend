@@ -19,21 +19,6 @@ export function NetWorthHero() {
           {netWorth.change}
         </span>
       </div>
-
-      <div className="h-6 w-px bg-border shrink-0" />
-
-      {/* Assets */}
-      <div className="flex items-baseline gap-2">
-        <span className="text-[10px] font-medium uppercase tracking-[0.1em] text-muted-foreground/60">Assets</span>
-        <span className="text-[14px] font-semibold tabular-nums text-foreground">€31,200</span>
-      </div>
-
-      {/* Liabilities */}
-      <div className="flex items-baseline gap-2">
-        <span className="text-[10px] font-medium uppercase tracking-[0.1em] text-muted-foreground/60">Liabilities</span>
-        <span className="text-[14px] font-semibold tabular-nums text-destructive">−€6,350</span>
-      </div>
-
     </div>
   );
 }
