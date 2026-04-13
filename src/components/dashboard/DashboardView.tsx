@@ -1,3 +1,4 @@
+import { useApp } from "@/context/AppContext";
 import { NetWorthHero } from "./NetWorthHero";
 import { StatStrip } from "./StatStrip";
 import { BudgetPanel } from "./BudgetPanel";
@@ -5,12 +6,15 @@ import { CashFlowPanel } from "./CashFlowPanel";
 import { TransactionPanel } from "./TransactionPanel";
 
 export function DashboardView() {
+  const { featureFlags } = useApp();
+
   return (
     <div className="flex h-full min-h-0 flex-col">
-      {/* Slim header bar */}
-      <div className="shrink-0 border-b border-border px-8 py-4">
-        <NetWorthHero />
-      </div>
+      {featureFlags.trading?.enabled && (
+        <div className="shrink-0 border-b border-border px-8 py-4">
+          <NetWorthHero />
+        </div>
+      )}
 
       {/* Main content — two columns */}
       <div className="flex flex-1 min-h-0 overflow-hidden">

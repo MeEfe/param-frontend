@@ -1,8 +1,8 @@
 import { Bell, ChevronLeft, ChevronRight } from "lucide-react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useApp } from "@/context/AppContext";
 import { navItems } from "@/data/mockData";
 import { ThemeSwitcher } from "./ThemeSwitcher";
+import { ProfileModal } from "./ProfileModal";
 
 export function TopBar() {
   const { activeNav, monthIdx, setMonthIdx, currentMonth, canPrev, canNext } = useApp();
@@ -43,11 +43,7 @@ export function TopBar() {
           <Bell size={15} />
         </button>
 
-        <button className="rounded-full ring-2 ring-transparent transition-all duration-150 hover:ring-primary/30">
-          <Avatar className="h-7 w-7">
-            <AvatarFallback className="bg-primary/20 text-[10px] font-bold text-primary">JD</AvatarFallback>
-          </Avatar>
-        </button>
+        <ProfileModal />
       </div>
     </div>
   );

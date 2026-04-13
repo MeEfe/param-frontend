@@ -74,3 +74,11 @@ export interface VariableBill {
   budget: number;
   category: string;
 }
+
+export interface FeatureFlag {
+  enabled: boolean;
+  label: string;
+  description: string;
+}
+
+export type FeatureFlags = Record<string, FeatureFlag>;

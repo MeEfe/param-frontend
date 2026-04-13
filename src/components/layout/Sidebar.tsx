@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Settings, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { navItems } from "@/data/mockData";
 import { useApp } from "@/context/AppContext";
 import { cn } from "@/lib/utils";
@@ -79,22 +79,6 @@ export function Sidebar() {
         )}
       </button>
 
-      {/* Settings */}
-      <button
-        className={cn(
-          "group relative flex cursor-pointer items-center rounded-lg text-muted-foreground transition-all duration-150 hover:bg-secondary hover:text-foreground",
-          expanded ? "h-9 w-full gap-3 px-2" : "h-9 w-9 justify-center"
-        )}
-      >
-        <Settings size={17} strokeWidth={1.5} className="shrink-0" />
-        {expanded ? (
-          <span className="text-[13px] font-medium whitespace-nowrap">Settings</span>
-        ) : (
-          <span className="pointer-events-none absolute left-full z-50 ml-3 whitespace-nowrap rounded-md bg-foreground px-2 py-1 text-[11px] font-medium text-background opacity-0 shadow-lg transition-opacity duration-150 group-hover:opacity-100">
-            Settings
-          </span>
-        )}
-      </button>
     </aside>
   );
 }

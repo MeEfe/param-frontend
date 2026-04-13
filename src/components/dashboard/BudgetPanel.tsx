@@ -1,12 +1,23 @@
+import { useApp } from '@/context/AppContext';
 import { budgetItems } from "@/data/mockData";
 import { getBarColor } from "@/lib/budgetStatus";
+import { ArrowRight } from 'lucide-react';
 
 export function BudgetPanel() {
+  const { setActiveNav } = useApp();
+
   return (
     <div>
-      <p className="mb-5 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-        Budget
-      </p>
+      <button
+        className="mb-5 flex items-center gap-2 cursor-pointer group"
+        onClick={() => setActiveNav("budgets")}
+        aria-label="Go to budgets"
+      >
+        <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground group-hover:text-foreground transition-colors duration-150">
+          Budget
+        </p>
+        <ArrowRight size={13} className="text-muted-foreground/50 group-hover:text-muted-foreground transition-colors duration-150" />
+      </button>
       <div className="space-y-5">
         {budgetItems.map((item) => {
           const pct = Math.round((item.spent / item.total) * 100);

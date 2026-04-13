@@ -1,0 +1,7 @@
+{
+  "trading": {
+    "enabled": false,
+    "label": "Trading",
+    "description": "Show net worth tracking and trading-related views on the dashboard."
+  }
+}
